@@ -16,14 +16,14 @@ class GetCoinsUseCase @Inject constructor(
     // We used flow because we want to emit multiple values over a period of time
     operator fun invoke(): Flow<Resource<List<Coin>>> = flow {
         try {
-            emit(Resource.Loading())
+            emit(Resource.Loading<List<Coin>>())
             val coins = repository.getCoins().map { it.toCoin() }
-            emit(Resource.Success(coins))
+            emit(Resource.Success<List<Coin>>(coins))
         } catch (e: HttpException) {
-            emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
+            emit(Resource.Error<List<Coin>>(e.localizedMessage ?: "An unexpected error occurred"))
         // if our repository or api can't even talk to the actual remote api for example no internet connection
         } catch (e: IOException) {
-            emit(Resource.Error("Couldn't reach server. Check your internet connection"))
+            emit(Resource.Error<List<Coin>>("Couldn't reach server. Check your internet connection"))
         }
     }
 }
